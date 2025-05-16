@@ -12,9 +12,7 @@ class AuthService {
   Future<void> login(String username, String password) async {
     final response = await http.post(
       Uri.parse(tokenUrl),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: {
         'grant_type': 'password',
         'client_id': clientId,
@@ -27,13 +25,12 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-
       final prefs = await SharedPreferences.getInstance();
+
       await prefs.setString('access_token', data['access_token']);
       await prefs.setString('refresh_token', data['refresh_token']);
       await prefs.setString('id_token', data['id_token']);
 
-      // Simpan waktu kadaluarsa access_token
       final decoded = JwtDecoder.decode(data['access_token']);
       await prefs.setInt('access_token_exp', decoded['exp']);
     } else {
@@ -45,19 +42,14 @@ class AuthService {
   // Fungsi logout
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('access_token');
-    await prefs.remove('refresh_token');
-    await prefs.remove('id_token');
-    await prefs.remove('access_token_exp');
+    await prefs.clear(); // Hapus semua token
   }
 
   // Fungsi refresh token
   Future<String?> refreshToken(String refreshToken) async {
     final response = await http.post(
       Uri.parse(tokenUrl),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: {
         'grant_type': 'refresh_token',
         'client_id': clientId,
@@ -83,21 +75,18 @@ class AuthService {
     }
   }
 
-  // Fungsi untuk mendapatkan token yang valid dan merefresh jika kurang dari 2 menit lagi expired
+  // Mendapatkan token valid atau me-refresh jika hampir habis
   Future<String?> getValidToken() async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('access_token');
     int? exp = prefs.getInt('access_token_exp');
 
-    if (token == null || exp == null) {
-      throw Exception("Tidak ada token yang tersimpan");
-    }
+    if (token == null || exp == null) throw Exception("Tidak ada token");
 
-    final currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final timeLeft = exp - currentTimestamp;
+    final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final timeLeft = exp - currentTime;
 
     if (timeLeft < 120) {
-      // Token akan expire dalam kurang dari 2 menit, refresh dulu
       final storedRefreshToken = prefs.getString('refresh_token');
       if (storedRefreshToken != null) {
         try {
@@ -107,14 +96,35 @@ class AuthService {
           throw Exception("Sesi habis, silakan login kembali.");
         }
       } else {
-        throw Exception("Tidak ada refresh token. Login ulang.");
+        throw Exception("Tidak ada refresh token.");
       }
     }
 
     return token;
   }
 
-  // (Opsional) Fungsi tambahan untuk memeriksa token kadaluarsa (manual)
+  // ✅ Fungsi untuk mengecek apakah user masih login
+  Future<bool> isLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    if (token == null || JwtDecoder.isExpired(token)) {
+      // Coba refresh token kalau expired
+      final refresh = prefs.getString('refresh_token');
+      if (refresh != null) {
+        try {
+          await refreshToken(refresh);
+          return true;
+        } catch (_) {
+          await logout();
+          return false;
+        }
+      }
+      return false;
+    }
+    return true;
+  }
+
+  // (Opsional) Mengecek apakah token expired secara manual
   bool isTokenExpired(String token) {
     try {
       return JwtDecoder.isExpired(token);

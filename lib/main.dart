@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
-import 'pages/login_page.dart'; // Ganti dengan path halaman login Anda
+import 'package:shared_preferences/shared_preferences.dart';
+import 'services/Auth_Service.dart'; // Ganti nama file ke lowercase
+import 'pages/login_page.dart'; // Ganti sesuai path file LoginPage kamu
+import 'pages/Setoran_Pages.dart'; // Ganti sesuai path file SetoranPage kamu
 
-void main() {
-  runApp(const MyApp()); // TAMBAHKAN const DI SINI
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final authService = AuthService();
+
+  bool loggedIn = await authService.isLoggedIn();
+
+  runApp(MyApp(initialRoute: loggedIn ? '/setoran' : '/login'));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key}); // TAMBAHKAN const DI SINI
+  final String initialRoute;
+  const MyApp({super.key, this.initialRoute = '/login'}); // Default route
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +24,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(), // Set halaman login sebagai halaman awal
+      initialRoute: initialRoute,
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/setoran': (context) => SetoranSayaPage(),
+      },
     );
   }
 }
