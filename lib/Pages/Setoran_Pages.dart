@@ -4,15 +4,6 @@ import 'dart:convert';
 import '../Services/Auth_Service.dart';
 import 'Login_Page.dart';
 
-final List<String> surahJuz30 = [
-  "An-Naba", "An-Naazi'at", "Abasa", "At-Takwir", "Al-Infitar", "Al-Mutaffifin", "Al-Inshiqaq",
-  "Al-Buruj", "At-Tariq", "Al-A’la", "Al-Ghashiyah", "Al-Fajr", "Al-Balad", "Ash-Shams", "Al-Lail",
-  "Ad-Duha", "Ash-Sharh", "At-Tin", "Al-‘Alaq", "Al-Qadr", "Al-Bayyinah", "Az-Zalzalah", "Al-‘Adiyat",
-  "Al-Qari’ah", "At-Takathur", "Al-‘Asr", "Al-Humazah", "Al-Fil", "Quraysh", "Al-Ma’un",
-  "Al-Kawthar", "Al-Kafirun", "An-Nasr", "Al-Lahab", "Al-Ikhlas", "Al-Falaq", "An-Nas",
-];
-
-
 class SetoranSayaPage extends StatefulWidget {
   @override
   _SetoranSayaPageState createState() => _SetoranSayaPageState();
@@ -61,9 +52,10 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF547792), // background halaman sesuai permintaan
       appBar: AppBar(
         title: Text("Setoran Saya"),
-        backgroundColor: Colors.blue[800],
+        backgroundColor: Color(0xFF547792), // warna bar header
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -87,6 +79,8 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
             final data = snapshot.data!['data'];
             final profil = data['info'];
             final infoDasar = data['setoran']['info_dasar'];
+            final detailSetoran = List.from(data['setoran']['detail'] ?? []);
+            final ringkasanList = List.from(data['setoran']['ringkasan'] ?? []);
 
             final totalWajib = infoDasar['total_wajib_setor'] ?? 0;
             final totalSudah = infoDasar['total_sudah_setor'] ?? 0;
@@ -97,7 +91,8 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Profil Mahasiswa', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('Profil Mahasiswa',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   _buildCard([
                     _buildProfileRow('Nama', profil['nama']),
@@ -107,7 +102,8 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
                     _buildProfileRow('Semester', profil['semester']?.toString()),
                   ]),
                   SizedBox(height: 16),
-                  Text('Dosen PA', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('Dosen PA',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   _buildCard([
                     _buildProfileRow('NIP', profil['dosen_pa']?['nip']),
@@ -115,10 +111,12 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
                     _buildProfileRow('Email', profil['dosen_pa']?['email']),
                   ]),
                   SizedBox(height: 24),
-                  Text('Progress Setoran Juz 30', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('Progress Setoran Juz 30',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   _buildCard([
-                    Text("Sudah disetor: $totalSudah dari $totalWajib surah", style: TextStyle(fontSize: 16)),
+                    Text("Sudah disetor: $totalSudah dari $totalWajib surah",
+                        style: TextStyle(fontSize: 16)),
                     SizedBox(height: 8),
                     LinearProgressIndicator(
                       value: persentase,
@@ -129,47 +127,98 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
                     SizedBox(height: 4),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Text("${(persentase * 100).toStringAsFixed(1)}%", style: TextStyle(fontSize: 14)),
+                      child: Text("${(persentase * 100).toStringAsFixed(1)}%",
+                          style: TextStyle(fontSize: 14)),
                     )
                   ]),
+
+                  // --- Scroll horizontal ringkasan progress ---
+                  SizedBox(height: 24),
+                  Text('Progress Setoran per Tahapan',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 8),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: ringkasanList.map<Widget>((item) {
+                        final label = item['label'] ?? '-';
+                        final sudah = item['total_sudah_setor'] ?? 0;
+                        final wajib = item['total_wajib_setor'] ?? 0;
+                        final persen = (item['persentase_progres_setor'] ?? 0).toDouble();
+
+                        return Container(
+                          width: 200,
+                          margin: EdgeInsets.only(right: 12),
+                          child: Card(
+                            color: Color(0xFFECEFCA), // warna card
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(label,
+                                      style: TextStyle(
+                                          fontSize: 16, fontWeight: FontWeight.bold)),
+                                  SizedBox(height: 8),
+                                  Text("Sudah: $sudah dari $wajib"),
+                                  SizedBox(height: 8),
+                                  LinearProgressIndicator(
+                                    value: wajib > 0 ? persen / 100 : 0,
+                                    backgroundColor: Colors.grey[300],
+                                    color: Colors.teal,
+                                    minHeight: 10,
+                                  ),
+                                  SizedBox(height: 4),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text("${persen.toStringAsFixed(1)}%"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+
                   SizedBox(height: 16),
-                  Text('Daftar Setoran Surah Juz 30', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('Daftar Setoran Surah Juz 30',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: surahJuz30.length,
+                    itemCount: detailSetoran.length,
                     itemBuilder: (context, index) {
-                      final namaSurah = surahJuz30[index];
-                      final List<dynamic> detailSetoran = data['setoran']['detail'] as List<dynamic>? ?? [];
-
-                      final sudah = detailSetoran.any((detail) {
-                        final detailNama = (detail['nama'] as String?)?.toLowerCase().replaceAll("'", "") ?? '';
-                        final surahJuz = namaSurah.toLowerCase().replaceAll("'", "");
-                        final sudahSetor = detail['sudah_setor'] == true;
-                        return sudahSetor && detailNama == surahJuz;
-                      });
+                      final surah = detailSetoran[index];
+                      final namaSurah = surah['nama'] ?? 'Surah Tidak Diketahui';
+                      final sudahSetor = surah['sudah_setor'] == true;
 
                       return Card(
+                        color: Color(0xFFECEFCA), // warna card
                         margin: EdgeInsets.symmetric(vertical: 4),
                         child: ListTile(
-                          title: Text(namaSurah, style: TextStyle(fontWeight: FontWeight.w600)),
+                          title: Text(namaSurah,
+                              style: TextStyle(fontWeight: FontWeight.w600)),
                           subtitle: Text(
-                            'Status: ${sudah ? "Sudah disetor" : "Belum disetor"}',
+                            'Status: ${sudahSetor ? "Sudah disetor" : "Belum disetor"}',
                             style: TextStyle(
-                              color: sudah ? Colors.green : Colors.red,
+                              color: sudahSetor ? Colors.green : Colors.red,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           trailing: Icon(
-                            sudah ? Icons.check_circle : Icons.radio_button_unchecked,
-                            color: sudah ? Colors.green : Colors.grey,
+                            sudahSetor
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
+                            color: sudahSetor ? Colors.green : Colors.grey,
                           ),
                         ),
                       );
                     },
                   ),
-
                 ],
               ),
             );
@@ -189,8 +238,14 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Expanded(flex: 3, child: Text('$label:', style: TextStyle(fontWeight: FontWeight.w500))),
-          Expanded(flex: 5, child: Text(value?.toString() ?? '-', style: TextStyle(color: Colors.black87))),
+          Expanded(
+              flex: 3,
+              child: Text('$label:',
+                  style: TextStyle(fontWeight: FontWeight.w500))),
+          Expanded(
+              flex: 5,
+              child: Text(value?.toString() ?? '-',
+                  style: TextStyle(color: Colors.black87))),
         ],
       ),
     );
@@ -198,6 +253,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
 
   Widget _buildCard(List<Widget> children) {
     return Card(
+      color: Color(0xFFECEFCA), // warna card sesuai permintaan
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: EdgeInsets.only(bottom: 12),
