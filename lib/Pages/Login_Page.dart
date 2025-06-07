@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.blue[50],
+      backgroundColor: Color(0xFF547792),
       appBar: AppBar(
         title: SizedBox.shrink(),
         backgroundColor: Colors.blue[800],
