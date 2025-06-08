@@ -10,6 +10,7 @@ class LogPage extends StatelessWidget {
     return timestamp.replaceFirst('T', ' ').replaceFirst('Z', '');
   }
 
+  //TAMPILAN
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +28,7 @@ class LogPage extends StatelessWidget {
         itemBuilder: (context, index) {
           final log = logList[index];
           final keterangan = log['keterangan'] ?? '-';
-          final aksi = log['aksi'] ?? '-';
-          final ip = log['ip'] ?? '-';
-          final userAgent = log['user_agent'] ?? '-';
+          final aksi = log['Status'] ?? '-';
           final timestamp = formatTimestamp(log['timestamp']);
           final dosen = log['dosen_yang_mengesahkan'];
           final namaDosen = dosen is Map ? dosen['nama'] ?? '-' : '-';
@@ -51,11 +50,9 @@ class LogPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Aksi: $aksi"),
+                    Text("Status: $aksi"),
                     Text("Dosen: $namaDosen"),
                     Text("Email Dosen: $emailDosen"),
-                    Text("IP: $ip"),
-                    Text("User Agent: $userAgent"),
                     Text("Waktu: $timestamp"),
                   ],
                 ),

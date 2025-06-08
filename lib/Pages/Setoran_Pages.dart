@@ -4,7 +4,7 @@ import 'dart:convert';
 import '../Services/Auth_Service.dart';
 import 'Login_Page.dart';
 import 'ProfilPage.dart';
-import 'Log_Page.dart'; // Pastikan halaman ini ada
+import 'Log_Page.dart';
 
 class SetoranSayaPage extends StatefulWidget {
   @override
@@ -76,6 +76,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
     profilData = profil;
     logList = log;
 
+    //TAMPILAN
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
