@@ -44,10 +44,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Color(0xFF547792),
+      backgroundColor: const Color(0xFF213448),
       appBar: AppBar(
         title: SizedBox.shrink(),
-        backgroundColor: Colors.blue[800],
+        backgroundColor: const Color(0xFF213448),
       ),
       body: SafeArea(
         child: GestureDetector(
@@ -126,6 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF213448),
                             padding: EdgeInsets.symmetric(vertical: 14, horizontal: 32),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -133,7 +134,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           child: Text(
                             'Login',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+
                           ),
                         ),
                       ),

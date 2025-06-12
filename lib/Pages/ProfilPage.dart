@@ -20,14 +20,14 @@ class ProfilePage extends StatelessWidget {
     //TAMPILAN
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF547792),
+        backgroundColor: const Color(0xFF213448),
         title: const Text(
           'Profil',
           style: TextStyle(color: Colors.white),
         ),
         foregroundColor: Colors.white,
       ),
-      backgroundColor: const Color(0xFF547792),
+      backgroundColor: const Color(0xFF213448),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -131,7 +131,7 @@ class ProfilePage extends StatelessWidget {
 
   static Widget _buildCard(List<Widget> children) {
     return Card(
-      color: const Color(0xFFECEFCA),
+      color: const Color(0xFFF5F5F5),
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       margin: const EdgeInsets.only(bottom: 16),

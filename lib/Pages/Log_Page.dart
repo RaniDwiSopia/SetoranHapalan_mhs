@@ -16,10 +16,10 @@ class LogPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Log Aktivitas"),
-        backgroundColor: Color(0xFF547792),
+        backgroundColor: const Color(0xFF213448),
         foregroundColor: Colors.white,
       ),
-      backgroundColor: Color(0xFFE0E8F0),
+      backgroundColor: const Color(0xFF213448),
       body: logList.isEmpty
           ? const Center(child: Text("Belum ada log aktivitas."))
           : ListView.builder(
@@ -27,8 +27,8 @@ class LogPage extends StatelessWidget {
         itemCount: logList.length,
         itemBuilder: (context, index) {
           final log = logList[index];
-          final keterangan = log['keterangan'] ?? '-';
-          final aksi = log['Status'] ?? '-';
+          final keterangan = (log['keterangan']?.split(' ').first ?? '-');
+          final aksi = log['aksi'] ?? '-';
           final timestamp = formatTimestamp(log['timestamp']);
           final dosen = log['dosen_yang_mengesahkan'];
           final namaDosen = dosen is Map ? dosen['nama'] ?? '-' : '-';

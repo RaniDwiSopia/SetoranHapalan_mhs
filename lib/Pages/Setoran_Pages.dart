@@ -52,12 +52,50 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
   }
 
   Future<void> _handleLogout() async {
-    await AuthService().logout();
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => LoginPage()),
-      );
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Konfirmasi Logout'),
+        content: Text('Apakah Anda yakin ingin logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Batal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.white24),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Ya, Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout == true) {
+      await AuthService().logout();
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => LoginPage()),
+        );
+      }
+    }
+  }
+
+
+  Color getProgressColor(double progress) {
+    if (progress < 0.17) {
+      return Colors.red;
+    } else if (progress < 0.34) {
+      return Colors.deepOrange;
+    } else if (progress < 0.5) {
+      return Colors.orange;
+    } else if (progress < 0.67) {
+      return Colors.amber;
+    } else if (progress < 0.84) {
+      return Colors.lightGreen;
+    } else {
+      return Colors.green;
     }
   }
 
@@ -72,11 +110,9 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
     final totalSudah = infoDasar['total_sudah_setor'] ?? 0;
     final persentase = totalWajib > 0 ? totalSudah / totalWajib : 0.0;
 
-    // Simpan data log dan profil
     profilData = profil;
     logList = log;
 
-    //TAMPILAN
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -86,7 +122,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
           SizedBox(height: 8),
           Card(
-            color: Color(0xFFECEFCA),
+            color: Color(0xFFF5F5F5),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: EdgeInsets.all(12),
@@ -97,7 +133,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
                   LinearProgressIndicator(
                     value: persentase,
                     backgroundColor: Colors.grey[300],
-                    color: Colors.teal,
+                    color: getProgressColor(persentase),
                     minHeight: 10,
                   ),
                   SizedBox(height: 4),
@@ -126,7 +162,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
                   width: 200,
                   margin: EdgeInsets.only(right: 12),
                   child: Card(
-                    color: Color(0xFFECEFCA),
+                    color: Color(0xFFF5F5F5),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Padding(
                       padding: const EdgeInsets.all(12),
@@ -140,7 +176,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
                           LinearProgressIndicator(
                             value: wajib > 0 ? persen / 100 : 0,
                             backgroundColor: Colors.grey[300],
-                            color: Colors.teal,
+                            color: getProgressColor(wajib > 0 ? persen / 100 : 0),
                             minHeight: 10,
                           ),
                           SizedBox(height: 4),
@@ -170,7 +206,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
               final sudahSetor = surah['sudah_setor'] == true;
 
               return Card(
-                color: Color(0xFFECEFCA),
+                color: Color(0xFFF5F5F5),
                 margin: EdgeInsets.symmetric(vertical: 4),
                 child: ListTile(
                   title: Text(namaSurah, style: TextStyle(fontWeight: FontWeight.w600)),
@@ -211,9 +247,9 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF547792),
+      backgroundColor: const Color(0xFF213448),
       appBar: AppBar(
-        backgroundColor: Color(0xFF547792),
+        backgroundColor: const Color(0xFF213448),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -237,7 +273,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF547792),
+        backgroundColor: const Color(0xFF213448),
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black54,
