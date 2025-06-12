@@ -16,10 +16,10 @@ class LogPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Log Aktivitas"),
-        backgroundColor: const Color(0xFFAFB7AC),
+        backgroundColor: const Color(0xFF131D4F),
         foregroundColor: Colors.white,
       ),
-      backgroundColor: const Color(0xFFAFB7AC),
+      backgroundColor: const Color(0xFF131D4F),
       body: logList.isEmpty
           ? const Center(child: Text("Belum ada log aktivitas."))
           : ListView.builder(

@@ -247,9 +247,9 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFAFB7AC),
+      backgroundColor: const Color(0xFF131D4F),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFAFB7AC),
+        backgroundColor: const Color(0xFF131D4F),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -273,7 +273,7 @@ class _SetoranSayaPageState extends State<SetoranSayaPage> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFFAFB7AC),
+        backgroundColor: const Color(0xFF131D4F),
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black54,

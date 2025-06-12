@@ -29,14 +29,14 @@ class ProfilePage extends StatelessWidget {
     //TAMPILAN
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFAFB7AC),
+        backgroundColor: const Color(0xFF131D4F),
         title: const Text(
           'Profil',
           style: TextStyle(color: Colors.white),
         ),
         foregroundColor: Colors.white,
       ),
-      backgroundColor: const Color(0xFFAFB7AC),
+      backgroundColor: const Color(0xFF131D4F),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -73,7 +73,7 @@ class ProfilePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -92,7 +92,7 @@ class ProfilePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ),
