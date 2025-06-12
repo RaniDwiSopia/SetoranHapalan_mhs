@@ -12,6 +12,15 @@ class ProfilePage extends StatelessWidget {
     return words.take(2).map((w) => w[0].toUpperCase()).join();
   }
 
+  Color getColorFromEmail(String email) {
+    final hash = email.hashCode;
+    final red = (hash & 0xFF0000) >> 16;
+    final green = (hash & 0x00FF00) >> 8;
+    final blue = (hash & 0x0000FF);
+    return Color.fromARGB(255, red, green, blue); // Alpha penuh
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final dosenPa = profil['dosen_pa'] as Map<String, dynamic>?;
@@ -20,14 +29,14 @@ class ProfilePage extends StatelessWidget {
     //TAMPILAN
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF213448),
+        backgroundColor: const Color(0xFFAFB7AC),
         title: const Text(
           'Profil',
           style: TextStyle(color: Colors.white),
         ),
         foregroundColor: Colors.white,
       ),
-      backgroundColor: const Color(0xFF213448),
+      backgroundColor: const Color(0xFFAFB7AC),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -36,16 +45,17 @@ class ProfilePage extends StatelessWidget {
             // Avatar dengan inisial
             CircleAvatar(
               radius: 40,
-              backgroundColor: Colors.white,
+              backgroundColor: getColorFromEmail(profil['email'] ?? ''),
               child: Text(
                 getInitials(nama),
                 style: const TextStyle(
-                  color: Color(0xFF547792),
+                  color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+
             const SizedBox(height: 12),
             Text(
               nama,
